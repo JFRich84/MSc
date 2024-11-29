@@ -20,9 +20,9 @@ def fetch_and_save_data():
             # Load symbols, start date, and end date from CSV
             df = pd.read_csv('symbols.csv')
 
-            # Check if required columns are present, ignoring case
+            # Check if required columns are present
             required_columns = ['symbol', 'start_date', 'end_date']
-            df.columns = df.columns.str.lower()
+            df.columns = df.columns.str.lower() # ignore case
             for col in required_columns:
                 if col not in df.columns:
                     raise KeyError(f"The CSV file must contain a column named '{col}'.")
@@ -33,7 +33,7 @@ def fetch_and_save_data():
 
             # Validate that start_date and end_date are provided
             if not start_date or not end_date:
-                raise ValueError("start date and end date must be provided in the CSV file.")
+                raise ValueError("Start date and end date must be provided in the CSV file.")
 
             # Load the API key from the .env file
             load_dotenv()
@@ -60,13 +60,12 @@ def fetch_and_save_data():
                 # Make the request
                 response = requests.get(url.format(symbol=symbol), headers=headers, params=querystring)
 
-                # Check if all data has been received
+                # Check if all data has been received, error reporting
                 if response.status_code == 200:
                     data = response.json()
                     if not data:
                         return pd.DataFrame()  # Return empty DataFrame if no data available
 
-                    # Convert the collected data to a pandas DataFrame
                     df = pd.DataFrame(data)
                     df['symbol'] = symbol  # Add a column for the symbol
                     return df
@@ -74,15 +73,15 @@ def fetch_and_save_data():
                     print(f"Error: {response.status_code}, {response.text}")
                     return pd.DataFrame()
 
-            # Initialize an empty DataFrame to store all the data
+            # Initialise an empty DataFrame to store all the data
             price_df = pd.DataFrame()
 
-            # Loop through each symbol and fetch its data
+            # Loop through each symbol and fetch price data
             for symbol in symbols:
                 symbol_df = get_eod_data(symbol, start_date, end_date, API_KEY)
                 price_df = pd.concat([price_df, symbol_df], ignore_index=True)
 
-            # Check if the data is non-empty before proceeding
+            # Check if the data is non-empty before proceeding. 
             if not price_df.empty:
                 # Format the date
                 price_df = price_df[['date', 'adjClose', 'symbol']]
@@ -102,7 +101,7 @@ def fetch_and_save_data():
         except KeyError as e:
             raise KeyError(str(e))
         except FileNotFoundError:
-            raise FileNotFoundError("The file 'symbols.csv' was not found. Please ensure it is in the correct directory.")
+            raise FileNotFoundError("The file 'symbols.csv' was not found.")
         except ValueError as e:
             print(e)
             return None
@@ -119,7 +118,6 @@ def fetch_and_save_data():
     return None
 
 
-# Running the file
 result = fetch_and_save_data()
 if result:
     print(f"Data saved to {result}")
