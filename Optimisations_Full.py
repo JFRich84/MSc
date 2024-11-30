@@ -7,8 +7,6 @@ from dotenv import load_dotenv
 import re
 
 
-
-
 def fetch_and_save_data():
     '''
     Combines user input handling and data fetching into a single function.
