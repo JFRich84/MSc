@@ -52,7 +52,7 @@ def fetch_and_save_data():
             API_KEY = os.getenv('Tiingo')
 
             if not API_KEY:
-                raise ValueError("API key not found in environment variables.")
+                raise ValueError("API key not found in env file.")
             
             # API EOD URL from Tiingo
             url = 'https://api.tiingo.com/tiingo/daily/{symbol}/prices'
