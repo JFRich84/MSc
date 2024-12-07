@@ -156,7 +156,7 @@ print(monthly_returns.head())
 
 # Calculate covariance matrices
 cov_sample = risk_models.sample_cov(monthly_prices, frequency=12) # inclusion in output only. Easy to understand method
-cov_sample = risk_models.CovarianceShrinkage(monthly_prices, frequency=12).ledoit_wolf()
+cov_ledoit = risk_models.CovarianceShrinkage(monthly_prices, frequency=12).ledoit_wolf()
 semivarcov = risk_models.semicovariance(monthly_prices, benchmark=0.0, frequency=12)
 
 # Convert covariance matrices to correlation matrices
@@ -175,7 +175,7 @@ def calculate_correlation(cov_matrix):
     return corr_matrix
 
 corr_sample = calculate_correlation(cov_sample)
-corr_ledoit = calculate_correlation(cov_sample)
+corr_ledoit = calculate_correlation(cov_ledoit)
 corr_semicov = calculate_correlation(semivarcov)
 print(corr_sample.head())
 
